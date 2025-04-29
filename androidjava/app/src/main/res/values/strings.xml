@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">androidjava</string>
+    <string name="hello_android">Hello Android</string>
+    <string name="bye_android">Bye Android</string>
+</resources>
