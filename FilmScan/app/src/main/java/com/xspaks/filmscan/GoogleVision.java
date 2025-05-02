@@ -4,7 +4,8 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 import android.util.Log;
 
-import com.xspaks.filmscan.api.GoogleVisionAPI;
+import com.xspaks.filmscan.api.GoogleVisionRequest;
+import com.xspaks.filmscan.api.GoogleVisionResult;
 import com.xspaks.filmscan.api.RetrofitClient;
 
 import java.io.IOException;
@@ -19,10 +20,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class GoogleVision {
-    public static Void request(Bitmap imageBitmap) {
+    public static void request(Bitmap imageBitmap, GoogleVisionResult result) {
 
         Retrofit retrofit = new RetrofitClient("https://vision.googleapis.com/").getRetrofitInstance();
-        GoogleVisionAPI visionAPI = retrofit.create(GoogleVisionAPI.class);
+        GoogleVisionRequest visionAPI = retrofit.create(GoogleVisionRequest.class);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
@@ -56,6 +57,7 @@ public class GoogleVision {
                     try {
                         String responseBody = response.body().string();
                         Log.d("GoogleVision", "Response: " + responseBody);
+                        result.onResult(responseBody);
                     } catch (IOException e) {
                         Log.e("GoogleVision", "Error reading response body", e);
                     }
@@ -69,7 +71,6 @@ public class GoogleVision {
                 Log.e("GoogleVision", "Request failed: " + t.getMessage());
             }
         });
-        return null;
     }
 }
 

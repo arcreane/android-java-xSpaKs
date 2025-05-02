@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface GoogleVisionAPI {
+public interface GoogleVisionRequest {
     @POST("v1/images:annotate?key=AIzaSyCGj5C2xpdkWY-APejR3XjbACSxxaNJO5k")
     Call<ResponseBody> annotateImage(@Body RequestBody body);
 }

@@ -17,6 +17,7 @@ import com.xspaks.filmscan.viewmodel.StartViewModel;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -26,11 +27,26 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
         viewModel = new ViewModelProvider(this).get(StartViewModel.class);
 
-        LinearLayout buttonContainer = findViewById(R.id.button_container);
+        PhotoDatabase photoDatabase = new PhotoDatabase();
+        photoDatabase.clearGameObjects();
+        if (!photoDatabase.areAllObjectsValidated()) {
+            StartViewModel.GameDifficulty difficulty = StartViewModel.GameDifficulty.getDifficultyFromNumberOfObjects(photoDatabase.existingObjectsLength());
 
+            // Security if database has too many objects stored for some reasons
+            if (difficulty == null) {
+                photoDatabase.clearGameObjects();
+            } else {
+                Intent intent = new Intent(this, GameActivity.class);
+                intent.putExtra("difficulty", difficulty.name());
+                startActivity(intent);
+                finish();
+            }
+        }
+
+        // Add difficulty buttons based on enum values
+        LinearLayout buttonContainer = findViewById(R.id.button_container);
         for (StartViewModel.GameDifficulty difficulty : StartViewModel.GameDifficulty.values()) {
             Button button = new Button(this);
             button.setText(difficulty.getLabel());
@@ -38,13 +54,14 @@ public class StartActivity extends AppCompatActivity {
             buttonContainer.addView(button);
         }
 
+        // Difficulty selection management
         viewModel.getSelectedDifficulty().observe(this, difficulty -> {
-            List<String> allObjects = loadGameObjectsFromJson(this);
-            PhotoDatabase photoDatabase = new PhotoDatabase();
+            List<String> allObjectsString = loadGameObjectsFromJson(this);
 
-            Collections.shuffle(allObjects);
+            Collections.shuffle(allObjectsString);
             for(int i = 0; i < difficulty.getNumberOfObjects(); i++) {
-                photoDatabase.insertGameObject(allObjects.get(i));
+                String name = allObjectsString.get(i);
+                photoDatabase.insertGameObject(name);
             }
 
             Intent intent = new Intent(this, GameActivity.class);

@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.xspaks.filmscan.database.PhotoDatabase;
+
 public class StartViewModel extends ViewModel {
 
     public enum GameDifficulty {
@@ -16,6 +18,15 @@ public class StartViewModel extends ViewModel {
         GameDifficulty(String label, int numberOfObjects) {
             this.label = label;
             this.numberOfObjects = numberOfObjects;
+        }
+
+        public static GameDifficulty getDifficultyFromNumberOfObjects(int count) {
+            for (GameDifficulty difficulty : GameDifficulty.values()) {
+                if (difficulty.getNumberOfObjects() == count) {
+                    return difficulty;
+                }
+            }
+            return null;
         }
 
         public String getLabel() {

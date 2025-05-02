@@ -57,10 +57,32 @@ public class PhotoDatabase {
         return gameObjects;
     }
 
+    public boolean areAllObjectsValidated() {
+        List<GameObject> existingGameObjects = getAllGameObjects();
+        boolean allValidated = true;
+
+        for (GameObject gameObject : existingGameObjects) {
+            if (!gameObject.isValidated()) {
+                allValidated = false;
+                break;
+            }
+        }
+
+        return allValidated;
+    }
+
+    public int existingObjectsLength() {
+        return getAllGameObjects().size();
+    }
+
     public void updateGameObjectStatus(int id, boolean isValidated) {
         ContentValues values = new ContentValues();
         values.put("validated", isValidated ? 1 : 0);
         database.update(TABLE_NAME, values, "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    public void clearGameObjects() {
+        database.execSQL("DELETE FROM game_objects");
     }
 
     public void closeDatabase() {
