@@ -10,7 +10,7 @@
         android:id="@+id/buttonScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scan a film" />
+        android:text="@string/button_picture" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="congratsText" type="id" />
+    <item name="bestScoreMessage" type="id" />
+    <item name="nameInput" type="id" />
+    <item name="replayButton" type="id" />
+    <item name="quitButton" type="id" />
+</resources>

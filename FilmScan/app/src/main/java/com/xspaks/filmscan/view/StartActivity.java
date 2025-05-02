@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.xspaks.filmscan.R;
 import com.xspaks.filmscan.database.PhotoDatabase;
 import com.xspaks.filmscan.model.GameObject;
+import com.xspaks.filmscan.model.Score;
 import com.xspaks.filmscan.viewmodel.StartViewModel;
 
 import java.util.Collections;
@@ -22,6 +24,7 @@ import java.util.Objects;
 public class StartActivity extends AppCompatActivity {
 
     private StartViewModel viewModel;
+    private PhotoDatabase database = new PhotoDatabase(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +32,13 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
         viewModel = new ViewModelProvider(this).get(StartViewModel.class);
 
-        PhotoDatabase photoDatabase = new PhotoDatabase();
-        photoDatabase.clearGameObjects();
-        if (!photoDatabase.areAllObjectsValidated()) {
-            StartViewModel.GameDifficulty difficulty = StartViewModel.GameDifficulty.getDifficultyFromNumberOfObjects(photoDatabase.existingObjectsLength());
+        database.clearGameObjects();
+        if (!database.areAllObjectsValidated()) {
+            StartViewModel.GameDifficulty difficulty = StartViewModel.GameDifficulty.getDifficultyFromNumberOfObjects(database.existingObjectsLength());
 
             // Security if database has too many objects stored for some reasons
             if (difficulty == null) {
-                photoDatabase.clearGameObjects();
+                database.clearGameObjects();
             } else {
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.putExtra("difficulty", difficulty.name());
@@ -54,6 +56,16 @@ public class StartActivity extends AppCompatActivity {
             buttonContainer.addView(button);
         }
 
+        TextView bestScoreText = findViewById(R.id.bestScoreText);
+        Score bestScore = database.getBestScore();
+
+        if (bestScore != null) {
+            String message = "Meilleur score : " + bestScore.getUsername() + " - " + bestScore.getPoints() + " pts";
+            bestScoreText.setText(message);
+        } else {
+            bestScoreText.setText("Aucun score enregistré");
+        }
+
         // Difficulty selection management
         viewModel.getSelectedDifficulty().observe(this, difficulty -> {
             List<String> allObjectsString = loadGameObjectsFromJson(this);
@@ -61,7 +73,7 @@ public class StartActivity extends AppCompatActivity {
             Collections.shuffle(allObjectsString);
             for(int i = 0; i < difficulty.getNumberOfObjects(); i++) {
                 String name = allObjectsString.get(i);
-                photoDatabase.insertGameObject(name);
+                database.insertGameObject(name);
             }
 
             Intent intent = new Intent(this, GameActivity.class);

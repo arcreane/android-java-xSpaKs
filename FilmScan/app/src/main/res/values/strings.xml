@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PicRush</string>
+    <string name="button_picture">Take a picture</string>
+    <string name="score_name">Enter your name</string>
+    <string name="game_won">Congrations ! You have won the game</string>
+    <string name="new_best_score">New best score ! 🥇</string>
+    <string name="button_replay">Replay</string>
+    <string name="button_quit">Quit</string>
 </resources>

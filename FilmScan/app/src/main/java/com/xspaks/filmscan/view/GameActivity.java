@@ -27,7 +27,7 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private final PhotoDatabase db = new PhotoDatabase();
+    private final PhotoDatabase db = new PhotoDatabase(this);
     private GameObjectAdapter adapter;
 
     @Override
@@ -118,6 +118,25 @@ public class GameActivity extends AppCompatActivity {
         db.updateGameObjectStatus(gameObjectID, true);
         List<GameObject> updatedGameObjects = db.getAllGameObjects();
         adapter.updateItems(updatedGameObjects);
+        checkGameOver(updatedGameObjects);
+    }
+
+    protected void checkGameOver(List<GameObject> gameObjects) {
+        boolean allValidated = true;
+        for (GameObject gameObject : gameObjects) {
+            if (!gameObject.isValidated()) {
+                allValidated = false;
+                break;
+            }
+        }
+
+        if (allValidated) {
+            Intent intent = new Intent(this, EndActivity.class);
+            intent.putExtra("score", gameObjects.size());
+            startActivity(intent);
+            db.clearGameObjects();
+            finish();
+        }
     }
 }
 
