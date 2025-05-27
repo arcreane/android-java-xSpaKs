@@ -6,4 +6,8 @@
     <string name="new_best_score">New best score ! 🥇</string>
     <string name="button_replay">Replay</string>
     <string name="button_quit">Quit</string>
+    <string name="welcome_text">Welcome to PicRush</string>
+    <string name="explainations">Take pictures of all required items and you win ! Select a difficulty to start the game</string>
+    <string name="score_leaderboard">Score leaderboard :</string>
+    <string name="no_score">No score registered yet.</string>
 </resources>

@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="valid_green">#C8E6C9</color>
     <color name="invalid_red">#FFCDD2</color>
+    <color name="easy_color">#C8E6C9</color>
+    <color name="medium_color">#FFF9C4</color>
+    <color name="hard_color">#FFCDD2</color>
 </resources>

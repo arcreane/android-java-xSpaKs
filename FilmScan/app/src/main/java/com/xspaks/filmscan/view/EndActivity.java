@@ -15,7 +15,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.xspaks.filmscan.R;
 import com.xspaks.filmscan.database.PhotoDatabase;
+import com.xspaks.filmscan.enums.GameDifficulty;
 import com.xspaks.filmscan.model.Score;
+
+import java.util.concurrent.TimeUnit;
 
 public class EndActivity extends AppCompatActivity {
 
@@ -31,7 +34,16 @@ public class EndActivity extends AppCompatActivity {
         Button quitButton = findViewById(R.id.quitButton);
         TextView bestScoreText = findViewById(R.id.bestScoreMessage);
 
-        int score = getIntent().getIntExtra("score", 0);
+        int numberOfObjects = getIntent().getIntExtra("numberOfObjects", 0);
+        GameDifficulty difficulty = GameDifficulty.getDifficultyFromNumberOfObjects(numberOfObjects);
+        long gameStartedAt = getIntent().getLongExtra("gameStartedAt", 0);
+        long currentDate = System.currentTimeMillis();
+
+        long durationMillis = currentDate - gameStartedAt;
+        long durationSeconds = TimeUnit.MILLISECONDS.toSeconds(durationMillis);
+        int baseScore = 1000;
+        int score = (int) (baseScore / (1 + Math.log1p(durationSeconds)));
+
         Score bestScore = database.getBestScore();
         if (bestScore == null || bestScore.getPoints() < score) {
             bestScoreText.setVisibility(View.VISIBLE);
@@ -40,7 +52,7 @@ public class EndActivity extends AppCompatActivity {
         replayButton.setOnClickListener(v -> {
             String name = nameInput.getText().toString().trim();
             if (!name.isEmpty()) {
-                database.insertScore(name, score);
+                database.insertScore(name, score, difficulty, (int) System.currentTimeMillis());
             }
 
             Intent intent = new Intent(this, StartActivity.class);
@@ -51,7 +63,7 @@ public class EndActivity extends AppCompatActivity {
         quitButton.setOnClickListener(v -> {
             String name = nameInput.getText().toString().trim();
             if (!name.isEmpty()) {
-                database.insertScore(name, score);
+                database.insertScore(name, score, difficulty, currentDate);
             }
 
             finishAffinity();

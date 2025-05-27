@@ -4,11 +4,15 @@ public class GameObject {
     private int id;
     private String name;
     private boolean validated;
+    private long createdAt;
+    private long validatedAt;
 
-    public GameObject(int id, String name, int validated) {
+    public GameObject(int id, String name, int validated, long createdAt, long validatedAt) {
         this.id = id;
         this.name = name;
         this.validated = validated == 1;
+        this.createdAt = createdAt;
+        this.validatedAt = validatedAt;
     }
 
     public int getId() {
@@ -21,5 +25,13 @@ public class GameObject {
 
     public boolean isValidated() {
         return validated;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public long getValidatedAt() {
+        return validatedAt;
     }
 }

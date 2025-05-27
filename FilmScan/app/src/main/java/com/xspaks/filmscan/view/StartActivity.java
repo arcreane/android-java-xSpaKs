@@ -4,37 +4,39 @@ import static com.xspaks.filmscan.database.JsonStorage.loadGameObjectsFromJson;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.xspaks.filmscan.R;
+import com.xspaks.filmscan.adapter.ScoreAdapter;
 import com.xspaks.filmscan.database.PhotoDatabase;
-import com.xspaks.filmscan.model.GameObject;
+import com.xspaks.filmscan.enums.GameDifficulty;
 import com.xspaks.filmscan.model.Score;
-import com.xspaks.filmscan.viewmodel.StartViewModel;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class StartActivity extends AppCompatActivity {
-
-    private StartViewModel viewModel;
+    private GameDifficulty difficulty;
     private PhotoDatabase database = new PhotoDatabase(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        viewModel = new ViewModelProvider(this).get(StartViewModel.class);
 
         database.clearGameObjects();
         if (!database.areAllObjectsValidated()) {
-            StartViewModel.GameDifficulty difficulty = StartViewModel.GameDifficulty.getDifficultyFromNumberOfObjects(database.existingObjectsLength());
+            difficulty = GameDifficulty.getDifficultyFromNumberOfObjects(database.existingObjectsLength());
 
             // Security if database has too many objects stored for some reasons
             if (difficulty == null) {
@@ -49,37 +51,55 @@ public class StartActivity extends AppCompatActivity {
 
         // Add difficulty buttons based on enum values
         LinearLayout buttonContainer = findViewById(R.id.button_container);
-        for (StartViewModel.GameDifficulty difficulty : StartViewModel.GameDifficulty.values()) {
+        for (GameDifficulty difficulty : GameDifficulty.values()) {
             Button button = new Button(this);
             button.setText(difficulty.getLabel());
-            button.setOnClickListener(v -> viewModel.setSelectedDifficulty(difficulty));
+            button.setBackgroundColor(ContextCompat.getColor(this, difficulty.getColor()));
+
+            // Margin
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 20, 0, 0); // 16px en haut
+            button.setLayoutParams(params);
+            button.setTextColor(getResources().getColor(R.color.black));
+
+            // ➕ OnClickListener pour lancer la partie
+            button.setOnClickListener(v -> {
+                List<String> allObjectsString = loadGameObjectsFromJson(this);
+                Collections.shuffle(allObjectsString);
+                database.clearGameObjects();
+
+                for (int i = 0; i < difficulty.getNumberOfObjects(); i++) {
+                    String name = allObjectsString.get(i);
+                    int currentTimestamp = (int) System.currentTimeMillis();
+                    database.insertGameObject(name, currentTimestamp);
+                }
+
+                Intent intent = new Intent(this, GameActivity.class);
+                intent.putExtra("difficulty", difficulty.name());
+                startActivity(intent);
+                finish();
+            });
+
             buttonContainer.addView(button);
         }
 
-        TextView bestScoreText = findViewById(R.id.bestScoreText);
-        Score bestScore = database.getBestScore();
+        TextView noScoreText = findViewById(R.id.noScoreText);
+        RecyclerView recyclerView = findViewById(R.id.scoreRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        if (bestScore != null) {
-            String message = "Meilleur score : " + bestScore.getUsername() + " - " + bestScore.getPoints() + " pts";
-            bestScoreText.setText(message);
+        List<Score> topScores = database.getBestScores(5);
+
+        if (topScores.isEmpty()) {
+            noScoreText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
         } else {
-            bestScoreText.setText("Aucun score enregistré");
+            noScoreText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            ScoreAdapter scoreAdapter = new ScoreAdapter(topScores);
+            recyclerView.setAdapter(scoreAdapter);
         }
-
-        // Difficulty selection management
-        viewModel.getSelectedDifficulty().observe(this, difficulty -> {
-            List<String> allObjectsString = loadGameObjectsFromJson(this);
-
-            Collections.shuffle(allObjectsString);
-            for(int i = 0; i < difficulty.getNumberOfObjects(); i++) {
-                String name = allObjectsString.get(i);
-                database.insertGameObject(name);
-            }
-
-            Intent intent = new Intent(this, GameActivity.class);
-            intent.putExtra("difficulty", difficulty.name());
-            startActivity(intent);
-            finish();
-        });
     }
 }

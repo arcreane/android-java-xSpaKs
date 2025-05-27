@@ -115,7 +115,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     protected void validatePhoto(int gameObjectID) {
-        db.updateGameObjectStatus(gameObjectID, true);
+        db.updateGameObjectStatus(gameObjectID, true, (int) System.currentTimeMillis());
         List<GameObject> updatedGameObjects = db.getAllGameObjects();
         adapter.updateItems(updatedGameObjects);
         checkGameOver(updatedGameObjects);
@@ -132,7 +132,8 @@ public class GameActivity extends AppCompatActivity {
 
         if (allValidated) {
             Intent intent = new Intent(this, EndActivity.class);
-            intent.putExtra("score", gameObjects.size());
+            intent.putExtra("numberOfObjects", gameObjects.size());
+            intent.putExtra("gameStartedAt", db.getGameStartDate());
             startActivity(intent);
             db.clearGameObjects();
             finish();
