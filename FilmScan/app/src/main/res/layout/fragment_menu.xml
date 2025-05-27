@@ -47,32 +47,4 @@
         android:gravity="center"
         android:layout_marginTop="16dp">
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/scoreTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/score_leaderboard"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        android:layout_gravity="center_horizontal" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/scoreRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp" />
-
-    <TextView
-        android:id="@+id/noScoreText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no_score"
-        android:textSize="16sp"
-        android:textStyle="italic"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"/>
-
 </LinearLayout>

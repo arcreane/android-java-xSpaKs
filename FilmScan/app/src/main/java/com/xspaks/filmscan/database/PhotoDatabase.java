@@ -21,7 +21,7 @@ public class PhotoDatabase extends SQLiteOpenHelper {
     public static final String SCORE_TABLE = "scores";
 
     public PhotoDatabase(Context context) {
-        super(context, DB_NAME, null, 3);
+        super(context, DB_NAME, null, 4);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PhotoDatabase extends SQLiteOpenHelper {
         values.put("name", name);
         values.put("validated", 0);
         values.put("created_at", current_timestamp);
-        values.put("updated_at", current_timestamp);
+        values.put("validated_at", current_timestamp);
         database.insert(GAME_OBJECTS_TABLE, null, values);
     }
 
@@ -120,6 +120,11 @@ public class PhotoDatabase extends SQLiteOpenHelper {
         database.execSQL("DELETE FROM " + GAME_OBJECTS_TABLE);
     }
 
+    public void clearScores() {
+        SQLiteDatabase database = getWritableDatabase();
+        database.execSQL("DELETE FROM " + SCORE_TABLE);
+    }
+
     public List<Score> getAllScores() {
         SQLiteDatabase database = getReadableDatabase();
         List<Score> scores = new ArrayList<>();
@@ -147,11 +152,11 @@ public class PhotoDatabase extends SQLiteOpenHelper {
         return scores;
     }
 
-    public List<Score> getBestScores(int limit) {
+    public List<Score> getBestScores(int limit, String _difficulty) {
         SQLiteDatabase database = getReadableDatabase();
         List<Score> bestScores = new ArrayList<>();
 
-        Cursor cursor = database.rawQuery("SELECT * FROM " + SCORE_TABLE + " ORDER BY points DESC LIMIT " + limit, null);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + SCORE_TABLE + " WHERE difficulty = '" + _difficulty + "' ORDER BY points DESC LIMIT " + limit, null);
         while (cursor.moveToNext()) {
             int idCol = cursor.getColumnIndex("id");
             int id = cursor.getInt(idCol);

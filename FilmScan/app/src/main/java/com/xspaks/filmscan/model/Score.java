@@ -2,6 +2,9 @@ package com.xspaks.filmscan.model;
 
 import com.xspaks.filmscan.enums.GameDifficulty;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class Score {
     private int id;
     private String username;
@@ -35,5 +38,11 @@ public class Score {
 
     public long getCreatedAt() {
         return createdAt;
+    }
+
+    public String getFormattedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH'h'mm", Locale.getDefault());
+        String formattedDate = sdf.format(createdAt);
+        return formattedDate;
     }
 }

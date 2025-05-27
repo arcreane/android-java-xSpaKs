@@ -4,15 +4,17 @@ import static com.xspaks.filmscan.database.JsonStorage.loadGameObjectsFromJson;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,49 +27,55 @@ import com.xspaks.filmscan.model.Score;
 import java.util.Collections;
 import java.util.List;
 
-public class StartActivity extends AppCompatActivity {
+public class MenuFragment extends Fragment {
+
     private GameDifficulty difficulty;
-    private PhotoDatabase database = new PhotoDatabase(this);
+    private PhotoDatabase database;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        return inflater.inflate(R.layout.fragment_menu, container, false);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        database.clearGameObjects();
+        database = new PhotoDatabase(requireContext());
+
         if (!database.areAllObjectsValidated()) {
             difficulty = GameDifficulty.getDifficultyFromNumberOfObjects(database.existingObjectsLength());
 
-            // Security if database has too many objects stored for some reasons
             if (difficulty == null) {
                 database.clearGameObjects();
             } else {
-                Intent intent = new Intent(this, GameActivity.class);
+                Intent intent = new Intent(requireContext(), GameActivity.class);
                 intent.putExtra("difficulty", difficulty.name());
                 startActivity(intent);
-                finish();
+                return;
             }
         }
 
-        // Add difficulty buttons based on enum values
-        LinearLayout buttonContainer = findViewById(R.id.button_container);
+        LinearLayout buttonContainer = view.findViewById(R.id.button_container);
         for (GameDifficulty difficulty : GameDifficulty.values()) {
-            Button button = new Button(this);
+            Button button = new Button(requireContext());
             button.setText(difficulty.getLabel());
-            button.setBackgroundColor(ContextCompat.getColor(this, difficulty.getColor()));
+            button.setBackgroundColor(ContextCompat.getColor(requireContext(), difficulty.getColor()));
 
-            // Margin
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(0, 20, 0, 0); // 16px en haut
+            params.setMargins(0, 20, 0, 0);
             button.setLayoutParams(params);
             button.setTextColor(getResources().getColor(R.color.black));
 
-            // ➕ OnClickListener pour lancer la partie
             button.setOnClickListener(v -> {
-                List<String> allObjectsString = loadGameObjectsFromJson(this);
+                List<String> allObjectsString = loadGameObjectsFromJson(requireContext());
                 Collections.shuffle(allObjectsString);
                 database.clearGameObjects();
 
@@ -77,29 +85,12 @@ public class StartActivity extends AppCompatActivity {
                     database.insertGameObject(name, currentTimestamp);
                 }
 
-                Intent intent = new Intent(this, GameActivity.class);
+                Intent intent = new Intent(requireContext(), GameActivity.class);
                 intent.putExtra("difficulty", difficulty.name());
                 startActivity(intent);
-                finish();
             });
 
             buttonContainer.addView(button);
-        }
-
-        TextView noScoreText = findViewById(R.id.noScoreText);
-        RecyclerView recyclerView = findViewById(R.id.scoreRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        List<Score> topScores = database.getBestScores(5);
-
-        if (topScores.isEmpty()) {
-            noScoreText.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            noScoreText.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            ScoreAdapter scoreAdapter = new ScoreAdapter(topScores);
-            recyclerView.setAdapter(scoreAdapter);
         }
     }
 }

@@ -33,6 +33,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
         Score score = scores.get(position);
         holder.usernameText.setText(score.getUsername());
         holder.pointsText.setText(score.getPoints() + " pts");
+        holder.dateText.setText(score.getFormattedDate());
     }
 
     @Override
@@ -41,12 +42,13 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView usernameText, pointsText;
+        TextView usernameText, pointsText, dateText;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameText = itemView.findViewById(R.id.usernameText);
             pointsText = itemView.findViewById(R.id.pointsText);
+            dateText = itemView.findViewById(R.id.dateText);
         }
     }
 }

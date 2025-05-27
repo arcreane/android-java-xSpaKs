@@ -23,7 +23,7 @@
             android:name=".view.EndActivity"
             android:exported="false" />
         <activity
-            android:name=".view.StartActivity"
+            android:name=".view.NavigationActivity"
             android:exported="true">
              <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

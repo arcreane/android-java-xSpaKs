@@ -52,10 +52,10 @@ public class EndActivity extends AppCompatActivity {
         replayButton.setOnClickListener(v -> {
             String name = nameInput.getText().toString().trim();
             if (!name.isEmpty()) {
-                database.insertScore(name, score, difficulty, (int) System.currentTimeMillis());
+                database.insertScore(name, score, difficulty, currentDate);
             }
 
-            Intent intent = new Intent(this, StartActivity.class);
+            Intent intent = new Intent(this, NavigationActivity.class);
             startActivity(intent);
             finish();
         });

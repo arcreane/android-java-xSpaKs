@@ -10,4 +10,7 @@
     <string name="explainations">Take pictures of all required items and you win ! Select a difficulty to start the game</string>
     <string name="score_leaderboard">Score leaderboard :</string>
     <string name="no_score">No score registered yet.</string>
+    <string name="easy_scores">Best scores in EASY mode</string>
+    <string name="medium_scores">Best scores in MEDIUM mode</string>
+    <string name="hard_scores">Best scores in HARD mode</string>
 </resources>

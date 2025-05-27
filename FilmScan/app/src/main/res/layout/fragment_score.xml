@@ -1,0 +1,23 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <include
+            android:id="@+id/easyScores"
+            layout="@layout/score_list" />
+
+        <include
+            android:id="@+id/mediumScores"
+            layout="@layout/score_list" />
+
+        <include
+            android:id="@+id/hardScores"
+            layout="@layout/score_list" />
+    </LinearLayout>
+</ScrollView>
