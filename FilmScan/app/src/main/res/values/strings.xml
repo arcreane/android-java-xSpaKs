@@ -2,7 +2,9 @@
     <string name="app_name">PicRush</string>
     <string name="button_picture">Take a picture</string>
     <string name="score_name">Enter your name</string>
-    <string name="game_won">Congrations ! You have won the game</string>
+    <string name="easy_game_won">Congratulations ! You have won the game in EASY mode</string>
+    <string name="medium_game_won">Congratulations ! You have won the game in MEDIUM mode</string>
+    <string name="hard_game_won">Congratulations ! You have won the game in HARD mode</string>
     <string name="new_best_score">New best score ! 🥇</string>
     <string name="button_replay">Replay</string>
     <string name="button_quit">Quit</string>
@@ -13,4 +15,7 @@
     <string name="easy_scores">Best scores in EASY mode</string>
     <string name="medium_scores">Best scores in MEDIUM mode</string>
     <string name="hard_scores">Best scores in HARD mode</string>
+    <string name="nav_menu">Menu</string>
+    <string name="nav_scores">Scores</string>
+    <string name="score_title">Records of PicRush</string>
 </resources>

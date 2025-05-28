@@ -28,10 +28,12 @@ public class GameObjectAdapter extends RecyclerView.Adapter<GameObjectAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
+        TextView validatedTextView;
 
         public ViewHolder(View view) {
             super(view);
             nameTextView = view.findViewById(R.id.textName);
+            validatedTextView = view.findViewById(R.id.textValidatedAt);
         }
     }
 
@@ -47,9 +49,11 @@ public class GameObjectAdapter extends RecyclerView.Adapter<GameObjectAdapter.Vi
     public void onBindViewHolder(@NonNull GameObjectAdapter.ViewHolder holder, int position) {
         GameObject item = items.get(position);
         holder.nameTextView.setText(item.getName());
+        holder.validatedTextView.setText(item.getFormattedValidatedDate());
 
         if (item.isValidated()) {
             holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.valid_green));
+            holder.validatedTextView.setVisibility(View.VISIBLE);
         } else {
             holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.invalid_red));
         }

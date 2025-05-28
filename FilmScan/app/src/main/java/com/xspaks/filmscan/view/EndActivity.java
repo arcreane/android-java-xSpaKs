@@ -28,23 +28,33 @@ public class EndActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end);
-
+        TextView congrats = findViewById(R.id.congratsText);
         EditText nameInput = findViewById(R.id.nameInput);
         Button replayButton = findViewById(R.id.replayButton);
         Button quitButton = findViewById(R.id.quitButton);
         TextView bestScoreText = findViewById(R.id.bestScoreMessage);
+        TextView resultScore = findViewById(R.id.resultScore);
 
         int numberOfObjects = getIntent().getIntExtra("numberOfObjects", 0);
         GameDifficulty difficulty = GameDifficulty.getDifficultyFromNumberOfObjects(numberOfObjects);
+
+        switch (difficulty.name()) {
+            case "EASY": congrats.setText(R.string.easy_game_won); break;
+            case "MEDIUM": congrats.setText(R.string.medium_game_won); break;
+            case "HARD": congrats.setText(R.string.hard_game_won); break;
+            default: break;
+        }
+
         long gameStartedAt = getIntent().getLongExtra("gameStartedAt", 0);
         long currentDate = System.currentTimeMillis();
-
         long durationMillis = currentDate - gameStartedAt;
         long durationSeconds = TimeUnit.MILLISECONDS.toSeconds(durationMillis);
         int baseScore = 1000;
         int score = (int) (baseScore / (1 + Math.log1p(durationSeconds)));
 
-        Score bestScore = database.getBestScore();
+        resultScore.setText("Your score is " + score + "points");
+
+        Score bestScore = database.getBestScore(difficulty.name());
         if (bestScore == null || bestScore.getPoints() < score) {
             bestScoreText.setVisibility(View.VISIBLE);
         }

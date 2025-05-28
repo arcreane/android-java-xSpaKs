@@ -8,6 +8,13 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <TextView
+            android:text="@string/score_title"
+            android:layout_gravity="center"
+            android:textSize="26sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"/>
         <include
             android:id="@+id/easyScores"
             layout="@layout/score_list" />

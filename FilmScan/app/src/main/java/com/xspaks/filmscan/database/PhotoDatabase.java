@@ -21,7 +21,7 @@ public class PhotoDatabase extends SQLiteOpenHelper {
     public static final String SCORE_TABLE = "scores";
 
     public PhotoDatabase(Context context) {
-        super(context, DB_NAME, null, 4);
+        super(context, DB_NAME, null, 5);
     }
 
     @Override
@@ -30,15 +30,15 @@ public class PhotoDatabase extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT NOT NULL, " +
                 "validated INTEGER DEFAULT 0, " +
-                "created_at LONG NOT NULL, " +
-                "validated_at LONG NOT NULL)");
+                "created_at INTEGER NOT NULL, " +
+                "validated_at INTEGER NOT NULL)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + SCORE_TABLE + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "username TEXT NOT NULL, " +
                 "points INTEGER NOT NULL," +
                 "difficulty TEXT NOT NULL, " +
-                "created_at LONG NOT NULL)");
+                "created_at INTEGER NOT NULL)");
     }
 
     @Override
@@ -73,10 +73,10 @@ public class PhotoDatabase extends SQLiteOpenHelper {
             int validated = cursor.getInt(validatedCol);
 
             int createdAtCol = cursor.getColumnIndex("created_at");
-            long createdAt = cursor.getInt(createdAtCol);
+            long createdAt = cursor.getLong(createdAtCol);
 
             int validatedAtCol = cursor.getColumnIndex("validated_at");
-            long validatedAt = cursor.getInt(validatedAtCol);
+            long validatedAt = cursor.getLong(validatedAtCol);
 
             gameObjects.add(new GameObject(id, name, validated, createdAt, validatedAt));
         }
@@ -144,7 +144,7 @@ public class PhotoDatabase extends SQLiteOpenHelper {
             String difficulty = cursor.getString(diffifcultyCol);
 
             int createdAtCol = cursor.getColumnIndex("created_at");
-            long createdAt = cursor.getInt(createdAtCol);
+            long createdAt = cursor.getLong(createdAtCol);
 
             scores.add(new Score(id, username, points, GameDifficulty.valueOf(difficulty), createdAt));
         }
@@ -171,7 +171,7 @@ public class PhotoDatabase extends SQLiteOpenHelper {
             String difficulty = cursor.getString(difficultyCol);
 
             int createdAtCol = cursor.getColumnIndex("created_at");
-            long createdAt = cursor.getInt(createdAtCol);
+            long createdAt = cursor.getLong(createdAtCol);
 
             bestScores.add(new Score(id, username, points, GameDifficulty.valueOf(difficulty), createdAt));
         }
@@ -179,11 +179,11 @@ public class PhotoDatabase extends SQLiteOpenHelper {
         return bestScores;
     }
 
-    public Score getBestScore() {
+    public Score getBestScore(String _difficulty) {
         SQLiteDatabase database = getReadableDatabase();
         Score bestScore = null;
 
-        Cursor cursor = database.rawQuery("SELECT * FROM " + SCORE_TABLE + " ORDER BY points DESC LIMIT 1", null);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + SCORE_TABLE + " WHERE difficulty = '" + _difficulty + "' ORDER BY points DESC LIMIT 1", null);
         if (cursor.moveToFirst()) {
             int idCol = cursor.getColumnIndex("id");
             int id = cursor.getInt(idCol);
@@ -198,7 +198,7 @@ public class PhotoDatabase extends SQLiteOpenHelper {
             String difficulty = cursor.getString(difficultyCol);
 
             int createdAtCol = cursor.getColumnIndex("created_at");
-            long createdAt = cursor.getInt(createdAtCol);
+            long createdAt = cursor.getLong(createdAtCol);
 
             bestScore = new Score(id, username, points, GameDifficulty.valueOf(difficulty), createdAt);
         }

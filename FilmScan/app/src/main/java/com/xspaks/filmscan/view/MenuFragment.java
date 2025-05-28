@@ -46,7 +46,8 @@ public class MenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         database = new PhotoDatabase(requireContext());
-
+        //database.clearScores();
+        //database.clearGameObjects();
         if (!database.areAllObjectsValidated()) {
             difficulty = GameDifficulty.getDifficultyFromNumberOfObjects(database.existingObjectsLength());
 
@@ -81,7 +82,7 @@ public class MenuFragment extends Fragment {
 
                 for (int i = 0; i < difficulty.getNumberOfObjects(); i++) {
                     String name = allObjectsString.get(i);
-                    int currentTimestamp = (int) System.currentTimeMillis();
+                    long currentTimestamp = System.currentTimeMillis();
                     database.insertGameObject(name, currentTimestamp);
                 }
 

@@ -3,9 +3,9 @@
     <item
         android:id="@+id/nav_menu"
         android:icon="@drawable/game"
-        android:title="Accueil"/>
+        android:title="@string/nav_menu"/>
     <item
         android:id="@+id/nav_score"
         android:icon="@drawable/score"
-        android:title="Jeu"/>
+        android:title="@string/nav_scores"/>
 </menu>

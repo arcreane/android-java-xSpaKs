@@ -1,5 +1,8 @@
 package com.xspaks.filmscan.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class GameObject {
     private int id;
     private String name;
@@ -33,5 +36,11 @@ public class GameObject {
 
     public long getValidatedAt() {
         return validatedAt;
+    }
+
+    public String getFormattedValidatedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH'h'mm", Locale.getDefault());
+        String formattedDate = sdf.format(validatedAt);
+        return formattedDate;
     }
 }
