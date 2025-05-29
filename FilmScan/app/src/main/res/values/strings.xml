@@ -18,4 +18,5 @@
     <string name="nav_menu">Menu</string>
     <string name="nav_scores">Scores</string>
     <string name="score_title">Records of PicRush</string>
+    <string name="object_list">Take pictures of these !</string>
 </resources>

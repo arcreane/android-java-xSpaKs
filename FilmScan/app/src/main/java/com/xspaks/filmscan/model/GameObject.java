@@ -38,6 +38,12 @@ public class GameObject {
         return validatedAt;
     }
 
+    public String getFormattedCreatedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH'h'mm", Locale.getDefault());
+        String formattedDate = sdf.format(createdAt);
+        return formattedDate;
+    }
+
     public String getFormattedValidatedDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH'h'mm", Locale.getDefault());
         String formattedDate = sdf.format(validatedAt);

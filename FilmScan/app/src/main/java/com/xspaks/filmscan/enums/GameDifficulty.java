@@ -3,9 +3,9 @@ package com.xspaks.filmscan.enums;
 import com.xspaks.filmscan.R;
 
 public enum GameDifficulty {
-    EASY("Easy (3 pts)", 3, R.color.easy_color),
-    MEDIUM("Medium (6 pts)", 6, R.color.medium_color),
-    HARD("Hard (10 pts)", 10, R.color.hard_color);
+    EASY("Easy", 3, R.color.easy_color),
+    MEDIUM("Medium", 6, R.color.medium_color),
+    HARD("Hard", 10, R.color.hard_color);
 
     private final String label;
     private final int numberOfObjects;

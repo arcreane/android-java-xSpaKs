@@ -5,8 +5,11 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +18,7 @@ import com.xspaks.filmscan.R;
 import com.xspaks.filmscan.adapter.GameObjectAdapter;
 import com.xspaks.filmscan.api.GoogleVisionResult;
 import com.xspaks.filmscan.database.PhotoDatabase;
+import com.xspaks.filmscan.enums.GameDifficulty;
 import com.xspaks.filmscan.model.GameObject;
 import com.xspaks.filmscan.model.GoogleVisionItem;
 
@@ -37,12 +41,19 @@ public class GameActivity extends AppCompatActivity {
 
         List<GameObject> allObjects = db.getAllGameObjects();
 
+        TextView textDifficulty = findViewById(R.id.gameDifficulty);
+        TextView textDate = findViewById(R.id.gameDate);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
+        GameDifficulty difficulty = GameDifficulty.getDifficultyFromNumberOfObjects(allObjects.size());
+        textDifficulty.setText(difficulty.name() + " MODE");
+        textDifficulty.setTextColor(ContextCompat.getColor(this, difficulty.getColor()));
+        textDate.setText(allObjects.get(0).getFormattedCreatedDate());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new GameObjectAdapter(allObjects);
         recyclerView.setAdapter(adapter);
 
-        Button boutonScan = findViewById(R.id.buttonScan);
+        ImageButton boutonScan = findViewById(R.id.buttonScan);
         boutonScan.setOnClickListener(v -> {
             Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -115,7 +126,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     protected void validatePhoto(int gameObjectID) {
-        db.updateGameObjectStatus(gameObjectID, true, (int) System.currentTimeMillis());
+        db.updateGameObjectStatus(gameObjectID, true, System.currentTimeMillis());
         List<GameObject> updatedGameObjects = db.getAllGameObjects();
         adapter.updateItems(updatedGameObjects);
         checkGameOver(updatedGameObjects);
